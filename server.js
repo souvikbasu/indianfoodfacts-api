@@ -48,6 +48,9 @@ app.get("/api/food/:name", function(req, res) {
         if (err) {
             handleError(res, err.message, "Failed to get contact");
         } else {
+            if(doc == null) {
+                doc = {};
+            }
             res.status(200).json(doc);
         }
     });
