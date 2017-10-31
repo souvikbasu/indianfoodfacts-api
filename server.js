@@ -60,7 +60,7 @@ app.get("/api/food/:name", function(req, res) {
 app.get("/api/anyfood", function(req, res) {
     var random = Math.floor(Math.random() * 8000);
 
-    db.collection(FOOD_COLLECTION).findOne().skip(100).exec(
+    db.collection(FOOD_COLLECTION).find().skip(100).exec(
         function(err, doc) {
             if (err) {
                 handleError(res, err.message, "Failed to get contact");
