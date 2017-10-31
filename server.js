@@ -57,7 +57,7 @@ app.get("/api/food/:name", function(req, res) {
     });
 });
 
-app.get("/api/food", function(req, res) {
+app.get("/api/anyfood", function(req, res) {
     var random = Math.floor(Math.random() * count);
     db.collection(FOOD_COLLECTION).findOne().skip(random).exec(
         function(err, doc) {
