@@ -1,0 +1,22 @@
+{
+  "name": "indianfoodfacts-api",
+  "version": "0.0.1",
+  "description": "API endpoint of indian food facts website",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:souvikbasu/indianfoodfacts-api.git"
+  },
+  "author": "Souvik Basu <souvikbasu@gmail.com> (http://www.meanhub.com)",
+  "license": "MIT",
+  "homepage": "https://www.indianfoodfacts.in",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "mongodb": "^2.2.33"
+  }
+}
