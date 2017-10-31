@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 var db;
 
 // Connect to the database before starting the application server.
-mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
+mongodb.MongoClient.connect(process.env.MONGODB_URI, function(err, database) {
     if (err) {
         console.log(err);
         process.exit(1);
@@ -23,7 +23,7 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
     console.log("Database connection ready");
 
     // Initialize the app.
-    var server = app.listen(process.env.PORT || 8080, function () {
+    var server = app.listen(process.env.PORT || 8080, function() {
         var port = server.address().port;
         console.log("App now running on port", port);
     });
@@ -44,14 +44,30 @@ function handleError(res, reason, message, code) {
 
 app.get("/api/food/:name", function(req, res) {
     var foodName = req.params.name;
-    db.collection(FOOD_COLLECTION).findOne({ "name": { "$regex": foodName, "$options": "i" } }, function(err, doc) {
+
+    db.collection(FOOD_COLLECTION).findOne({"name": {"$regex": foodName, "$options": "i"}}, function(err, doc) {
         if (err) {
             handleError(res, err.message, "Failed to get contact");
         } else {
-            if(doc == null) {
+            if (doc == null) {
                 doc = {};
             }
             res.status(200).json(doc);
         }
     });
+});
+
+app.get("/api/food", function(req, res) {
+    var random = Math.floor(Math.random() * count);
+    db.collection(FOOD_COLLECTION).findOne().skip(random).exec(
+        function(err, doc) {
+            if (err) {
+                handleError(res, err.message, "Failed to get contact");
+            } else {
+                if (doc == null) {
+                    doc = {};
+                }
+                res.status(200).json(doc);
+            }
+        });
 });
