@@ -58,7 +58,8 @@ app.get("/api/food/:name", function(req, res) {
 });
 
 app.get("/api/anyfood", function(req, res) {
-    var random = Math.floor(Math.random() * count);
+    var random = Math.floor(Math.random() * 8000);
+
     db.collection(FOOD_COLLECTION).findOne().skip(random).exec(
         function(err, doc) {
             if (err) {
