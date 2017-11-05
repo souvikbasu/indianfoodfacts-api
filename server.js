@@ -1,11 +1,12 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
-var ObjectID = mongodb.ObjectID;
+var cors = require('cors');
 
 var FOOD_COLLECTION = "foods";
 
 var app = express();
+app.use(cors());
 app.use(bodyParser.json());
 
 // Create a database variable outside of the database connection callback to reuse the connection pool in your app.
