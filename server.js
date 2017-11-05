@@ -44,17 +44,31 @@ function handleError(res, reason, message, code) {
 
 app.get("/api/food/:name", function(req, res) {
     var foodName = req.params.name;
+    var limit = Number(req.query.limit || 1);
 
-    db.collection(FOOD_COLLECTION).findOne({"name": {"$regex": foodName, "$options": "i"}}, function(err, doc) {
-        if (err) {
-            handleError(res, err.message, "Failed to get contact");
-        } else {
-            if (doc == null) {
-                doc = {};
+    if(limit === 1) {
+        db.collection(FOOD_COLLECTION).findOne({"name": {"$regex": foodName, "$options": "i"}}, function(err, doc) {
+            if (err) {
+                handleError(res, err.message, "Failed to get contact");
+            } else {
+                if (doc === null) {
+                    doc = {};
+                }
+                res.status(200).json(doc);
             }
-            res.status(200).json(doc);
-        }
-    });
+        });
+    } else {
+        db.collection(FOOD_COLLECTION).find({"name": {"$regex": foodName, "$options": "i"}}).limit(limit).toArray(function(err, doc) {
+            if (err) {
+                handleError(res, err.message, "Failed to get contact");
+            } else {
+                if (doc === null) {
+                    doc = {};
+                }
+                res.status(200).json(doc);
+            }
+        });
+    }
 });
 
 app.get("/api/anyfood", function(req, res) {
