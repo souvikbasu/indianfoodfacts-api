@@ -1,7 +1,9 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
+var ObjectId = mongodb.ObjectId;
 var cors = require('cors');
+var basicAuth = require('express-basic-auth')
 
 var FOOD_COLLECTION = "foods";
 
@@ -88,22 +90,46 @@ app.get("/api/anyfood", function(req, res) {
         });
 });
 
+
+
+
+// All calls here after need authorization
+
+let credentials = {};
+credentials[process.env.ADMIN_USERNAME] = [process.env.ADMIN_PASSWORD];
+console.log('Authorizing ', credentials);
+
+app.use(basicAuth({
+    users: credentials
+}))
+
 app.post("/api/food", function(req, res) {
-    if (req.body.username && req.body.username === process.env.ADMIN_USERNAME && req.body.password && req.body.password === process.env.ADMIN_PASSWORD) {
-        var food = req.body.food;
-        console.log(food);
-        db.collection(FOOD_COLLECTION).insert(food, function(err, doc) {
-            if (err) {
-                handleError(res, err.message, "Failed to add food item");
-            } else {
-                if (doc === null) {
-                    doc = {};
-                }
-                res.status(200).json(doc);
+    var food = req.body.food;
+    console.log(food);
+    db.collection(FOOD_COLLECTION).insert(food, function(err, doc) {
+        if (err) {
+            handleError(res, err.message, "Failed to add food item");
+        } else {
+            if (doc === null) {
+                doc = {};
             }
-        });
-    } else {
-        res.status(403).json({message: "User not authenticated! username: " + req.body.username + " password: " + req.body.password});
-    }
+            res.status(200).json(doc);
+        }
+    });
+});
+
+app.delete("/api/food/:id", function(req, res) {
+    var id = req.params.id;
+    console.log('Food to be deleted', id);
+    db.collection(FOOD_COLLECTION).remove({_id: new ObjectId(id)}, function(err, doc) {
+        if (err) {
+            handleError(res, err.message, "Failed to delete food item: ", id);
+        } else {
+            if (doc === null) {
+                doc = {};
+            }
+            res.status(200).json(doc);
+        }
+    });
 });
 
