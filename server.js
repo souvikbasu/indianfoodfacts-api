@@ -103,7 +103,7 @@ app.post("/api/food", function(req, res) {
             }
         });
     } else {
-        res.status(403).json({message: "User not authenticated!"});
+        res.status(403).json({message: "User not authenticated! username: " + req.body.username + " password: " + req.body.password});
     }
 });
 
