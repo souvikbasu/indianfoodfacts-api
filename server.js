@@ -61,7 +61,7 @@ app.get("/api/food/:name", function(req, res) {
     } else {
         db.collection(FOOD_COLLECTION).find({"name": {"$regex": foodName, "$options": "i"}}).limit(limit).toArray(function(err, doc) {
             if (err) {
-                handleError(res, err.message, "Failed to get contact");
+                handleError(res, err.message, "Failed to get food");
             } else {
                 if (doc === null) {
                     doc = {};
@@ -78,7 +78,7 @@ app.get("/api/anyfood", function(req, res) {
     db.collection(FOOD_COLLECTION).findOne({},{}, { skip: random},
         function(err, doc) {
             if (err) {
-                handleError(res, err.message, "Failed to get contact");
+                handleError(res, err.message, "Failed to get food");
             } else {
                 if (doc == null) {
                     doc = {};
@@ -87,3 +87,23 @@ app.get("/api/anyfood", function(req, res) {
             }
         });
 });
+
+app.post("/api/food", function(req, res) {
+    if (req.body.username && req.body.username === process.env.ADMIN_USERNAME && req.body.password && req.body.password === process.env.ADMIN_PASSWORD) {
+        var food = req.body.food;
+        console.log(food);
+        db.collection(FOOD_COLLECTION).insert(food, function(err, doc) {
+            if (err) {
+                handleError(res, err.message, "Failed to add food item");
+            } else {
+                if (doc === null) {
+                    doc = {};
+                }
+                res.status(200).json(doc);
+            }
+        });
+    } else {
+        res.status(403).json({message: "User not authenticated!"});
+    }
+});
+
